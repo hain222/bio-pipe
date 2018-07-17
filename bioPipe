@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+
+# File: bioPipe
+# Author: Harrison Inocencio
+# Date: 07-17-18
+# Purpose: contains the bioPipe class, which is the top level class
+#		   and can be used to run the pipeline. Executing this script
+#		   will start the pipeline
+
+# Usage: Can be executed as a script
+
+# Notes:
+# 1.
+# 2.
+# 3.
+# 4.
+# 5.
+
+# TODO:
+# 1. 
+# 2.
+# 3.
+# 4.
+# 5.
+
+# -------------------------------------------------------------------
+
+import os
+import args
+import setBuild
+from readFile import readFile
+from sampleSet import sampleSet
+
+# bioPipe class
+class bioPipe:
+	"""
+	bioPipe class calls all other classes, and is the top level
+	object for the pipeline. Can be run directly to execute the pipeline
+
+	ATRS:
+		target_dir = dir containing reads
+
+	"""
+
+	# __init__ func
+	# sets attributes to arguments specified in arg_dic
+	def __init__(self, arg_dic):
+		self.target_dir = arg_dic.read_dir
+		# Add in terminal backslash if missing
+		if self.target_dir[-1] != "/":
+			self.target_dir+="/"
+	
+	# run func
+	# Starts the pipe
+	def run(self):
+		fastq_list = []
+		for item in os.listdir(self.target_dir):
+			if ".fastq" in item:
+				fastq_list.append(self.target_dir+item)
+		self.sample_sets = setBuild.build_sets(fastq_list)
+		for item in self.sample_sets:
+			item.tprint()
+
+# main func
+# Called when file is executed instead of imported
+def main():
+	arg_dic = args.parse()
+	pipe = bioPipe(arg_dic)
+	pipe.run()
+
+if __name__ == '__main__':
+	main()
