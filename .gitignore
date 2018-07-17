@@ -6,3 +6,6 @@ test*
 
 # ignore swaps
 .*.swp
+
+# ignore caches
+__pycache__
