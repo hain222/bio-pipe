@@ -14,7 +14,7 @@
 
 # TODO:
 # 1. Remove hardcoded "_" etc... (42, 49)
-# 2.
+# 2. Add 'purpose' description
 # 3.
 # 4.
 # 5.
@@ -33,7 +33,7 @@ class readFile:
 	ATR:
 		fpath = full path to file
 		fname = base file name
-		head = contains run number and sample "4560-S1"
+		run_id = contains run number "4560"
 		sample = sample number "S1"
 		lane = lane number "L001"
 		direction = read direction "R1"
@@ -58,7 +58,7 @@ class readFile:
 		
 		# Extract additional info from fname
 		spl_name = self.fname.split("_")
-		self.head = spl_name[0]
+		self.run_id = spl_name[0].split("-")[0]
 		self.sample =  spl_name[1]
 		self.lane = spl_name[2]
 		self.direction = spl_name[3]
@@ -74,7 +74,7 @@ class readFile:
 	def tprint(self):
 		print(self.fpath)
 		print(self.fname)
-		print(self.head)
+		print(self.run_id)
 		print(self.sample)
 		print(self.lane)
 		print(self.direction)
