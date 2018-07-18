@@ -21,14 +21,19 @@
 
 import argparse
 
+# Output sub dir names (terminal '/' required)
+merge_dir = 'merged_reads/'
+
 # parser HELPS
 read_dir_help = "read_dir HELP"
+output_dir_help = "output_dir HELP"
 
 # parse func
 # parses arguments from the command line
 def parse():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('read_dir', help=read_dir_help)
+	parser.add_argument('output_dir', help=output_dir_help)
 	args = parser.parse_args()
 
 	return args

@@ -17,7 +17,7 @@
 # 5.
 
 # TODO:
-# 1. 
+# 1. Fix hardcoding! (Not just in this script either)
 # 2.
 # 3.
 # 4.
@@ -27,9 +27,9 @@
 
 import os
 import args
-import setBuild
+import plumber
 from readFile import readFile
-from sampleSet import sampleSet
+from readBall import readBall
 
 # bioPipe class
 class bioPipe:
@@ -38,7 +38,12 @@ class bioPipe:
 	object for the pipeline. Can be run directly to execute the pipeline
 
 	ATRS:
+		PRE-RUN
 		target_dir = dir containing reads
+		output_dir = output directory
+
+		ON-RUN
+		read_pit = master list of readBall objects
 
 	"""
 
@@ -46,20 +51,43 @@ class bioPipe:
 	# sets attributes to arguments specified in arg_dic
 	def __init__(self, arg_dic):
 		self.target_dir = arg_dic.read_dir
-		# Add in terminal backslash if missing
+		self.output_dir = arg_dic.output_dir
+	
+	# __run_init func
+	# inits a pipe run, checks dirs, mks output dir, return fastq list
+	def __run_init(self):
+		# Add terminal backslash to dirs if absent
 		if self.target_dir[-1] != "/":
 			self.target_dir+="/"
-	
-	# run func
-	# Starts the pipe
-	def run(self):
+		if self.output_dir[-1] != "/":
+			self.output_dir+="/"
+
+		# Mk output dir (remove directory if exists)
+		plumber.force_dir(self.output_dir)
+
+		# Return fastq list
 		fastq_list = []
 		for item in os.listdir(self.target_dir):
 			if ".fastq" in item:
 				fastq_list.append(self.target_dir+item)
-		self.sample_sets = setBuild.build_sets(fastq_list)
-		for item in self.sample_sets:
-			item.tprint()
+
+		return fastq_list
+
+	# __mass_merge func
+	# Calls the 'merge' function for each readBall in the master_list,
+	# setting each set's 'merge_fname' attribute
+	def __mass_merge(self):
+		merge_dir = self.output_dir+args.merge_dir
+		plumber.force_dir(merge_dir)
+		for rball in self.read_pit:
+			rball.merge_ball(merge_dir)
+
+	# run func
+	# Starts the pipe
+	def run(self):
+		fastq_list = self.__run_init()
+		self.read_pit = plumber.build_read_pit(fastq_list)
+		self.__mass_merge()
 
 # main func
 # Called when file is executed instead of imported
