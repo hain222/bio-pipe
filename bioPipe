@@ -26,10 +26,10 @@
 # -------------------------------------------------------------------
 
 import os
-import args
-import plumber
-from readFile import readFile
-from readBall import readBall
+import lib.args as args
+import lib.plumber as plumber
+from lib.readFile import readFile
+from lib.readBall import readBall
 
 # bioPipe class
 class bioPipe:

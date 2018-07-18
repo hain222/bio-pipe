@@ -20,7 +20,7 @@
 # -------------------------------------------------------------------
 
 import gzip
-from readFile import readFile
+from lib.readFile import readFile
 
 # merge_name_generator func
 # Generates merged read file names from readFile obj

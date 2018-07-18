@@ -21,8 +21,8 @@
 
 import os
 import shutil
-from readFile import readFile
-from readBall import readBall
+from lib.readFile import readFile
+from lib.readBall import readBall
 
 # build_sets func
 # build the master list of readBalls from a list of fastq paths

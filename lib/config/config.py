@@ -1,4 +1,4 @@
-# File: configBox.py
+# File: config.py
 # Author: Harrison Inocencio
 # Date: 07-18-18
 # Purpose: Contains the config class, a container for r/w to the config file
@@ -22,7 +22,7 @@
 
 import os
 import configparser
-import config.cargs as cargs
+import lib.config.cargs as cargs
 
 # config class
 class config():

@@ -20,8 +20,8 @@
 
 # -------------------------------------------------------------------
 
-import plumber
-import merge
+import lib.plumber
+import lib.merge
 
 # readBall class
 class readBall:

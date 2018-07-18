@@ -22,8 +22,8 @@
 
 # -------------------------------------------------------------------
 
-import config.cargs
-from config.config import config
+import lib.config.cargs as cargs
+from lib.config.config import config
 
 # bpConfig class
 class bpConfig:
