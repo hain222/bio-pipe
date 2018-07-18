@@ -9,3 +9,6 @@ test*
 
 # ignore caches
 __pycache__
+
+# ingore configs
+*.ini
