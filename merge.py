@@ -55,7 +55,7 @@ def merge_helper(rset, merge_dir):
 	merge_path = merge_dir+merge_name_generator(rset[0])
 	#print("merge_path=", merge_path)
 	#for item in rset:
-		#print(item.fname)
+	#	print(item.fname)
 	with open (merge_path, 'w') as opath:
 		for rf in rset:
 			if rf.gzip == True:
