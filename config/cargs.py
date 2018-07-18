@@ -21,8 +21,7 @@
 # -------------------------------------------------------------------
 
 # Config path
-### config_path = "bioPipe_config.ini"
-config_path = 'test_config.ini'
+config_path = "bioPipe_config.ini"
 
 # Config contents
 config_header = "# This is an automatically generated configuration file\n"

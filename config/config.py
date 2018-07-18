@@ -22,7 +22,7 @@
 
 import os
 import configparser
-import cargs
+import config.cargs as cargs
 
 # config class
 class config():
