@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+
+# File: bpConfig
+# Author: Harrison Inocencio
+# Date: 07-18-18
+# Purpose: Queries the user for parameters to be written to the config
+#		   file.
+
+# Notes:
+# 1.
+# 2.
+# 3.
+# 4.
+# 5.
+
+# TODO:
+# 1. Eventually fix this up to be more like configQuery from ec2-toolbox
+# 2.
+# 3.
+# 4.
+# 5.
+
+# -------------------------------------------------------------------
+
+import config.cargs
+from config.config import config
+
+# bpConfig class
+class bpConfig:
+
+	"""
+	Queries the user for config parameters. Once it has created the new
+	config object, it writes it to the config file.
+	"""
+
+	cbox = config()
+	
+	# begin func
+	# This function will start the query process
+	def begin(self):
+		self.cbox.trim_jar_path = input('trim_jar_path = ')
+		
+		self.cbox.config_write()
+
+
+# main func
+# Executes this func if class is executed rather than imported
+def main():
+	query = bpConfig()
+	query.begin()
+
+if __name__ == '__main__':
+	main()
