@@ -77,19 +77,19 @@ class bioPipe:
 	# __mass_merge func
 	# Calls the 'merge' function for each readBall in the master_list
 	def __mass_merge(self):
-		merge_dir = self.output_dir+args.merge_dir
-		plumber.force_dir(merge_dir)
+		merge_path = self.output_dir+args.merge_dir
+		plumber.force_dir(merge_path)
 		for rball in self.read_pit:
-			rball.merge_ball(merge_dir)
+			rball.merge_ball(merge_path)
 
 	# __mass_trim func
 	# Calls 'trim' for each readBall. Only run as a secondary step if 
 	# the args specify for it
 	def __mass_trim(self):
-		trim_dir = self.output_dir+args.trim_dir
-		plumber.force_dir(trim_dir)
-		#for rball in self.read_pit:
-		#	rball.trim(trim_dir, self.trim_args)
+		trim_path = self.output_dir+args.trim_dir
+		plumber.force_dir(trim_path)
+		for rball in self.read_pit:
+			rball.trim_ball(trim_path, self.trim_args)
 
 	# run func
 	# Starts the pipe
@@ -97,6 +97,7 @@ class bioPipe:
 		fastq_list = self.__run_init()
 		self.read_pit = plumber.build_read_pit(fastq_list)
 		### self.__mass_merge()
+		# Trim if called
 		if self.trim_args != None:
 			self.__mass_trim()
 		print("done")
