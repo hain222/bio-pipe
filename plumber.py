@@ -56,7 +56,7 @@ def build_read_pit(fastq_list):
 
 # force_dir func
 # Forces creation of specified directory by deleting the prexisting
-# dir if found
+# dir if found.
 def force_dir(dpath):
 	try:
 		os.mkdir(dpath)
