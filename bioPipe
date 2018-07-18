@@ -64,7 +64,7 @@ class bioPipe:
 			self.output_dir+="/"
 
 		# Mk output dir (remove directory if exists)
-		### plumber.force_dir(self.output_dir)
+		plumber.force_dir(self.output_dir)
 
 		# Return fastq list
 		fastq_list = []
