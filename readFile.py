@@ -26,8 +26,8 @@ import os
 # readFile class
 class readFile:
 	"""
-	readFile class is a container for read files that parses the 
-	information found in the file names and stores them in it's 
+	readFile class is a container for a read file that parses the 
+	information found in the file name and stores them in it's 
 	attributes
 
 	ATR:
