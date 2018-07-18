@@ -10,9 +10,9 @@
 # Usage: Can be executed as a script
 
 # Notes:
-# 1.
-# 2.
-# 3.
+# 1. # Descriptive comment
+# 2. ## Debug print comment
+# 3. ### Needs to be uncommented before completion
 # 4.
 # 5.
 
@@ -52,6 +52,7 @@ class bioPipe:
 	def __init__(self, arg_dic):
 		self.target_dir = arg_dic.read_dir
 		self.output_dir = arg_dic.output_dir
+		self.trim_args = arg_dic.trim_args
 	
 	# __run_init func
 	# inits a pipe run, checks dirs, mks output dir, return fastq list
@@ -63,7 +64,7 @@ class bioPipe:
 			self.output_dir+="/"
 
 		# Mk output dir (remove directory if exists)
-		plumber.force_dir(self.output_dir)
+		### plumber.force_dir(self.output_dir)
 
 		# Return fastq list
 		fastq_list = []
@@ -74,20 +75,31 @@ class bioPipe:
 		return fastq_list
 
 	# __mass_merge func
-	# Calls the 'merge' function for each readBall in the master_list,
-	# setting each set's 'merge_fname' attribute
+	# Calls the 'merge' function for each readBall in the master_list
 	def __mass_merge(self):
 		merge_dir = self.output_dir+args.merge_dir
 		plumber.force_dir(merge_dir)
 		for rball in self.read_pit:
 			rball.merge_ball(merge_dir)
 
+	# __mass_trim func
+	# Calls 'trim' for each readBall. Only run as a secondary step if 
+	# the args specify for it
+	def __mass_trim(self):
+		trim_dir = self.output_dir+args.trim_dir
+		plumber.force_dir(trim_dir)
+		#for rball in self.read_pit:
+		#	rball.trim(trim_dir, self.trim_args)
+
 	# run func
 	# Starts the pipe
 	def run(self):
 		fastq_list = self.__run_init()
 		self.read_pit = plumber.build_read_pit(fastq_list)
-		self.__mass_merge()
+		### self.__mass_merge()
+		if self.trim_args != None:
+			self.__mass_trim()
+		print("done")
 
 # main func
 # Called when file is executed instead of imported
