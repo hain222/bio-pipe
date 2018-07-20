@@ -47,7 +47,11 @@ class bpConfig:
 # Executes this func if class is executed rather than imported
 def main():
 	query = bpConfig()
-	query.begin()
+	try:
+		query.begin()
+	except KeyboardInterrupt:
+		print()
+		exit(1)
 
 if __name__ == '__main__':
 	main()
