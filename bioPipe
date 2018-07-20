@@ -30,6 +30,7 @@ import lib.args as args
 import lib.plumber as plumber
 from lib.readFile import readFile
 from lib.readBall import readBall
+#from lib.analysisModule import analysisModule
 
 # bioPipe class
 class bioPipe:
@@ -62,10 +63,7 @@ class bioPipe:
 			self.target_dir+="/"
 		if self.output_dir[-1] != "/":
 			self.output_dir+="/"
-
-		# Mk output dir (remove directory if exists)
-		plumber.force_dir(self.output_dir)
-
+		
 		# Return fastq list
 		fastq_list = []
 		for item in os.listdir(self.target_dir):
@@ -78,8 +76,10 @@ class bioPipe:
 	# Calls the 'merge' function for each readBall in the master_list
 	def __mass_merge(self):
 		merge_path = self.output_dir+args.merge_dir
+		print("\tMerge path set to", merge_path)
 		plumber.force_dir(merge_path)
 		for rball in self.read_pit:
+			print("\t\tMerging sample %s ..." % rball.sample_id)
 			rball.merge_ball(merge_path)
 
 	# __mass_trim func
@@ -87,20 +87,42 @@ class bioPipe:
 	# the args specify for it
 	def __mass_trim(self):
 		trim_path = self.output_dir+args.trim_dir
+		print("\tTrim path set to", trim_path)
+		print("\tTrim args set to \"%s\"" % self.trim_args)
 		plumber.force_dir(trim_path)
 		for rball in self.read_pit:
+			print("\t\tTrimming sample %s ..." % rball.sample_id)
 			rball.trim_ball(trim_path, self.trim_args)
 
 	# run func
 	# Starts the pipe
 	def run(self):
+		print("Beginning Pipe ...")
+		print("Initializing ...")
+		### plumber.force_dir(self.output_dir)
 		fastq_list = self.__run_init()
+		print("Building Pit ...")
 		self.read_pit = plumber.build_read_pit(fastq_list)
+		print("Beginning Merges ...")
 		### self.__mass_merge()
 		# Trim if called
-		if self.trim_args != None:
-			self.__mass_trim()
-		print("done")
+		### if self.trim_args != None:
+		###	"Trim called, beginning trims ..."
+		###	self.__mass_trim()
+		
+		test_rfs1 = [readFile("test_out/trimmed/4560-S1_trimmmed/4560-S1_S1_all_R1_paired.fastq")]
+		trball = readBall(test_rfs1)
+		trball.fwd_merge_rf = readFile("test_out/trimmed/4560-S1_trimmmed/4560-S1_S1_all_R1_paired.fastq")
+		trball.rev_merge_rf = readFile("test_out/trimmed/4560-S1_trimmmed/4560-S1_S1_all_R2_paired.fastq")
+
+		trball.tprint()
+		tpit = [trball]
+
+		# Create analysis module
+		#module = analysisModule(read_pit):
+		#analysisMoudle()
+
+		print("Closing Pipe ...")
 
 # main func
 # Called when file is executed instead of imported

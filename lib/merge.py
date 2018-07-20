@@ -58,6 +58,8 @@ def merge_helper(rset, merge_dir):
 	#	print(item.fname)
 	with open (merge_path, 'w') as opath:
 		for rf in rset:
+			print("\t\t\tAdding %s to %s merged ..." % (
+												rf.fname, rf.direction))
 			if rf.gzip == True:
 				comp_merge(rf, opath)
 			else:
