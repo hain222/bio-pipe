@@ -134,16 +134,7 @@ class bioPipe:
 			print("Trim called, beginning trims ...")
 			self.__mass_trim()
 		print("Beginning interleaves ...")
-		self.__mass_interleave()	
-
-'''	
-		test_rfs1 = [readFile("test_out/trimmed/4560-S1_trimmed/4560-S1_S1_all_R1_paired.fastq")]
-		test_rfs2 = [readFile("test_out/trimmed/4560-S2_trimmed/4560-S2_S2_all_R1_paired.fastq")]
-		trball1 = readBall(test_rfs1)
-		trball2 = readBall(test_rfs2)
-		trball1.inter_rf = readFile("test_out/interleaved/4560-S1_S1_all_interleaved_001.fastq")
-		trball2.inter_rf = readFile("test_out/interleaved/4560-S2_S2_all_interleaved_001.fastq")
-'''
+		self.__mass_interleave()
 
 		#self.read_pit = [trball1, trball2]
 		#for ball in self.read_pit:
