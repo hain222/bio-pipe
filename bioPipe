@@ -30,7 +30,7 @@ import lib.args as args
 import lib.plumber as plumber
 from lib.readFile import readFile
 from lib.readBall import readBall
-#from lib.analysisModule import analysisModule
+from lib.sampleBall import sampleBall
 
 # bioPipe class
 class bioPipe:
@@ -54,7 +54,9 @@ class bioPipe:
 		self.target_dir = arg_dic.read_dir
 		self.output_dir = arg_dic.output_dir
 		self.trim_args = arg_dic.trim_args
-	
+		self.key_file = arg_dic.key_file
+		self.vkmer_args = arg_dic.velvet_kmer_args
+			
 	# __run_init func
 	# inits a pipe run, checks dirs, mks output dir, return fastq list
 	def __run_init(self):
@@ -94,6 +96,28 @@ class bioPipe:
 			print("\t\tTrimming sample %s ..." % rball.sample_id)
 			rball.trim_ball(trim_path, self.trim_args)
 
+	# __mass_interleave func
+	# Calls 'interleave' for each readBall, setting the inter_rf atr
+	# For use in the assembly step
+	def __mass_interleave(self):
+		inter_path = self.output_dir+args.inter_dir
+		print("\tInterleave path set to", inter_path)
+		plumber.force_dir(inter_path)
+		for rball in self.read_pit:
+			print("\t\tInterleaving sample %s ..." % rball.sample_id)
+			rball.interleave(inter_path)
+
+	# __mass_assemble func
+	# Calls 'assemble' for each sampleBall in the sample_pit, setting the
+	# associated assemble atrs in the sampleBall
+	def __mass_assemble(self):
+		assemble_path = self.output_dir+args.assemble_dir
+		print("\tAssembly path set to", assemble_path)
+		plumber.force_dir(assemble_path)
+		for sball in self.sample_pit:
+			print("\t\tAssembling sample %s ..." % sball.sample_id)
+			sball.assemble(assemble_path, self.vkmer_args)
+
 	# run func
 	# Starts the pipe
 	def run(self):
@@ -109,18 +133,31 @@ class bioPipe:
 		### if self.trim_args != None:
 		###	"Trim called, beginning trims ..."
 		###	self.__mass_trim()
+		### self.__mass_interleave()	
+	
+		test_rfs1 = [readFile("test_out/trimmed/4560-S1_trimmed/4560-S1_S1_all_R1_paired.fastq")]
+		test_rfs2 = [readFile("test_out/trimmed/4560-S2_trimmed/4560-S2_S2_all_R1_paired.fastq")]
+		trball1 = readBall(test_rfs1)
+		trball2 = readBall(test_rfs2)
+		trball1.inter_rf = readFile("test_out/interleaved/4560-S1_S1_all_interleaved_001.fastq")
+		trball2.inter_rf = readFile("test_out/interleaved/4560-S2_S2_all_interleaved_001.fastq")
+
+
+		self.read_pit = [trball1, trball2]
+		#for ball in self.read_pit:
+		#	ball.tprint()
+
+		# Create the sample dolly from the processed read pit
+		# sample_pit contains sampleBalls, which contain all the atr
+		# and functionalites needed for operations post-read processing
+		self.sample_pit = []
+		for rball in self.read_pit:
+			self.sample_pit.append(sampleBall(rball, self.key_file))
+
+		#for sball in self.sample_pit:
+		#	sball.tprint()
 		
-		test_rfs1 = [readFile("test_out/trimmed/4560-S1_trimmmed/4560-S1_S1_all_R1_paired.fastq")]
-		trball = readBall(test_rfs1)
-		trball.fwd_merge_rf = readFile("test_out/trimmed/4560-S1_trimmmed/4560-S1_S1_all_R1_paired.fastq")
-		trball.rev_merge_rf = readFile("test_out/trimmed/4560-S1_trimmmed/4560-S1_S1_all_R2_paired.fastq")
-
-		trball.tprint()
-		tpit = [trball]
-
-		# Create analysis module
-		#module = analysisModule(read_pit):
-		#analysisMoudle()
+		self.__mass_assemble()
 
 		print("Closing Pipe ...")
 
