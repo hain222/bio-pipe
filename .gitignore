@@ -12,3 +12,6 @@ __pycache__
 
 # ingore configs
 *.ini
+
+# Ignore misc/archive code
+misc/
