@@ -123,27 +123,29 @@ class bioPipe:
 	def run(self):
 		print("Beginning Pipe ...")
 		print("Initializing ...")
-		### plumber.force_dir(self.output_dir)
+		plumber.force_dir(self.output_dir)
 		fastq_list = self.__run_init()
 		print("Building Pit ...")
 		self.read_pit = plumber.build_read_pit(fastq_list)
 		print("Beginning Merges ...")
-		### self.__mass_merge()
+		self.__mass_merge()
 		# Trim if called
-		### if self.trim_args != None:
-		###	"Trim called, beginning trims ..."
-		###	self.__mass_trim()
-		### self.__mass_interleave()	
-	
+		if self.trim_args != None:
+			print("Trim called, beginning trims ...")
+			self.__mass_trim()
+		print("Beginning interleaves ...")
+		self.__mass_interleave()	
+
+'''	
 		test_rfs1 = [readFile("test_out/trimmed/4560-S1_trimmed/4560-S1_S1_all_R1_paired.fastq")]
 		test_rfs2 = [readFile("test_out/trimmed/4560-S2_trimmed/4560-S2_S2_all_R1_paired.fastq")]
 		trball1 = readBall(test_rfs1)
 		trball2 = readBall(test_rfs2)
 		trball1.inter_rf = readFile("test_out/interleaved/4560-S1_S1_all_interleaved_001.fastq")
 		trball2.inter_rf = readFile("test_out/interleaved/4560-S2_S2_all_interleaved_001.fastq")
+'''
 
-
-		self.read_pit = [trball1, trball2]
+		#self.read_pit = [trball1, trball2]
 		#for ball in self.read_pit:
 		#	ball.tprint()
 
@@ -157,6 +159,7 @@ class bioPipe:
 		#for sball in self.sample_pit:
 		#	sball.tprint()
 		
+		print("Beginning assemlies ...")
 		self.__mass_assemble()
 
 		print("Closing Pipe ...")
