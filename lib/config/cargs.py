@@ -25,8 +25,12 @@ config_path = "bioPipe_config.ini"
 
 # Config contents
 config_header = "# This is an automatically generated configuration file\n"
-section_name = 'BIOPIPE'
+	# Trimmomatic
+trim_section = 'TRIMMOMATIC'
 trim_jar_path_key = 'trimJarPath'
+	# Velvet
+velvet_section = 'VELVET'
+vread_type_key = 'vReadType'
 
 # Errors
 key_error = 'ERROR: INI Key error encountered'

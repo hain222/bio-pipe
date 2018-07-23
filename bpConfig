@@ -38,7 +38,10 @@ class bpConfig:
 	# begin func
 	# This function will start the query process
 	def begin(self):
+		print("[TRIMMOMATIC OPTIONS]")
 		self.cbox.trim_jar_path = input('trim_jar_path = ')
+		print("[VELVET OPTIONS]")
+		self.cbox.vread_type = input('velvet_read_type = ')
 		
 		self.cbox.config_write()
 

@@ -34,6 +34,7 @@ class config():
 	"""
 
 	trim_jar_path = None
+	vread_type = None
 
 	# __init__ func
 	# By default, will automatically try to load ini file
@@ -48,8 +49,10 @@ class config():
 	def __parse_ini(self):
 		config = configparser.ConfigParser()
 		config.read(cargs.config_path)
-		self.trim_jar_path = config[cargs.section_name][(
+		self.trim_jar_path = config[cargs.trim_section][(
 												cargs.trim_jar_path_key)]
+		self.vread_type = config[cargs.velvet_section][(
+												cargs.vread_type_key)]
 
 	# __check_path func
 	# Attempts to locate config file path
@@ -75,9 +78,15 @@ class config():
 	# Will overwrite current config file
 	def config_write(self):
 		config = configparser.ConfigParser()
-		config[cargs.section_name] = {}
-		config[cargs.section_name][cargs.trim_jar_path_key] = (
+		config[cargs.trim_section] = {}
+		config[cargs.trim_section][cargs.trim_jar_path_key] = (
 														self.trim_jar_path)
+		config[cargs.velvet_section] = {}
+		config[cargs.velvet_section][cargs.vread_type_key] = (
+														self.vread_type)
+
+		#config[cargs.section_name][cargs.trim_section][(
+		#		cargs.trim_jar_path_key)] = self.trim_jar_path
 		with open(cargs.config_path, 'w') as fh:
 			fh.write(cargs.config_header+'\n')
 			config.write(fh)
@@ -86,3 +95,4 @@ class config():
 	# Print out all attributes (for testing)
 	def tprint(self):
 		print(self.trim_jar_path)
+		print(self.vread_type)
