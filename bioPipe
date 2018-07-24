@@ -117,24 +117,33 @@ class bioPipe:
 		for sball in self.sample_pit:
 			print("\t\tAssembling sample %s ..." % sball.sample_id)
 			sball.assemble(assemble_path, self.vkmer_args)
+	
+	# __export_assemblies func
+	# Exports all the assembly fastas into a single directory, 
+	# also sets the sampleBalls fasta atr to point to the copied assembly
+	def __export_assemblies(self):
+		assembly_exp_path = self.output_dir+args.assembly_exp_dir
+		plumber.force_dir(assembly_exp_path)
+		for sball in self.sample_pit:
+			sball.export_assembly(assembly_exp_path)
 
 	# run func
 	# Starts the pipe
 	def run(self):
 		print("Beginning Pipe ...")
 		print("Initializing ...")
-		plumber.force_dir(self.output_dir)
+		### plumber.force_dir(self.output_dir)
 		fastq_list = self.__run_init()
 		print("Building Pit ...")
 		self.read_pit = plumber.build_read_pit(fastq_list)
 		print("Beginning Merges ...")
-		self.__mass_merge()
+		### self.__mass_merge()
 		# Trim if called
 		if self.trim_args != None:
 			print("Trim called, beginning trims ...")
 			self.__mass_trim()
 		print("Beginning interleaves ...")
-		self.__mass_interleave()
+		### self.__mass_interleave()
 
 		#self.read_pit = [trball1, trball2]
 		#for ball in self.read_pit:
@@ -150,8 +159,28 @@ class bioPipe:
 		#for sball in self.sample_pit:
 		#	sball.tprint()
 		
-		print("Beginning assemlies ...")
-		self.__mass_assemble()
+		print("Beginning assemblies ...")
+		### self.__mass_assemble()
+		print("Exporting assemblies ...")
+		
+		sb1 = sampleBall()
+		sb1.run_id = "4560"
+		sb1.sample_id = "S1"
+		sb1.strain_id = "HC296"
+		sb1.inter_rf = None
+		sb1.assemble_path = "chunk_out/assembly/4560-HC296_assembly"
+		sb2 = sampleBall()
+		sb2.run_id = "4560"
+		sb2.sample_id = "S2"
+		sb2.strain_id = None
+		sb2.inter_rf = None
+		sb2.assemble_path = "chunk_out/assembly/4560-HC540_assembly"
+		self.sample_pit = [sb1, sb2]
+
+		#for sball in self.sample_pit:
+		#	sball.tprint()
+
+		self.__export_assemblies()
 
 		print("Closing Pipe ...")
 

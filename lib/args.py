@@ -26,6 +26,7 @@ merge_dir = 'merged_reads/'
 trim_dir = 'trimmed/'
 inter_dir = 'interleaved/'
 assemble_dir = 'assembly/'
+assembly_exp_dir = 'fastas/'
 
 # parser HELPS
 read_dir_help = "read_dir HELP"

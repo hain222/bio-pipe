@@ -21,6 +21,7 @@
 
 # -------------------------------------------------------------------
 
+import shutil
 import subprocess
 import lib.args as args
 from lib.config.config import config
@@ -34,12 +35,13 @@ class sampleBall:
 
 	# __init__ func
 	# Define class atr using passed readBall
-	def __init__(self, rball, key_file=None):
-		self.run_id = rball.run_id
-		self.sample_id = rball.sample_id
-		self.inter_rf = rball.inter_rf
+	# (Note: remove rball = None arg)
+	def __init__(self, rball=None, key_file=None):
+		### self.run_id = rball.run_id
+		### self.sample_id = rball.sample_id
+		### self.inter_rf = rball.inter_rf
 		self.cbox = config()
-		
+
 		# Check that config obj loaded correctly
 		try:
 			self.cbox.check_path()
@@ -50,6 +52,7 @@ class sampleBall:
 		if key_file != None:
 			self.strain_id = self.__get_strain_id(key_file)
 		self.assemble_path = None
+		self.export_fasta = None
 
 	# __get_strain_id func
 	# Searches the provided key_file for a corresponding strain_id
@@ -97,11 +100,28 @@ class sampleBall:
 								universal_newlines=True)
 		except subprocess.CalledProcessError as perror:
 			raise(RuntimeError("ERROR: assembly failed!"))
+	
+	# export_assembly func
+	# Copies the assembly fasta in assemble_path, into the exp_path
+	# dir and renames the fasta according to the strain_id or sample_id
+	def export_assembly(self, exp_path):
+		if self.strain_id == None:
+			cpy_dst = "%s/%s-%s_%s.fasta" % (exp_path, self.run_id, 
+											self.sample_id, self.sample_id)
+		else:
+			cpy_dst = "%s/%s-%s_%s.fasta" % (exp_path, self.run_id, 
+											self.sample_id, self.strain_id)
 
+		shutil.copy("%s/contigs.fa" % self.assemble_path, cpy_dst, 
+					follow_symlinks=True)
+		self.export_fasta = cpy_dst
+	
 	# tprint func
 	# Prints all class atrs (for testing ...)
 	def tprint(self):
 		print(self.run_id)
 		print(self.strain_id)
 		print(self.sample_id)
-		self.inter_rf.tprint()
+		print(self.assemble_path)
+		print(self.export_fasta)
+		### self.inter_rf.tprint()
