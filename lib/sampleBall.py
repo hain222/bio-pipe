@@ -24,6 +24,7 @@
 import shutil
 import subprocess
 import lib.args as args
+import lib.formatter as formatter
 from lib.config.config import config
 
 # sampleBall class
@@ -115,7 +116,13 @@ class sampleBall:
 		shutil.copy("%s/contigs.fa" % self.assemble_path, cpy_dst, 
 					follow_symlinks=True)
 		self.export_fasta = cpy_dst
-	
+
+	# format_headers func
+	# Formats all of the sequence headers in the export_fasta file
+	# to be usable with Dr. Farman's SNP caller program. 
+	def format_headers(self):
+		formatter.format_head(self)
+
 	# tprint func
 	# Prints all class atrs (for testing ...)
 	def tprint(self):
