@@ -25,6 +25,7 @@ import subprocess
 import lib.args as args
 import lib.plumber as plumber
 from Bio import SeqIO
+from lib.qSeq import qSeq
 
 # blastBranch class
 class blastBranch:
@@ -40,8 +41,8 @@ class blastBranch:
 		self.base_blast_path = blast_path
 		self.sample_pit = sample_pit
 		self.query_fpath = query_fpath
-		self.query_list = []
 		self.db_bucket = []
+		self.qSeq_list = []
 
 	# __format_id func
 	# Removes periods/spaces from the passed id and returns a the new id
@@ -64,13 +65,16 @@ class blastBranch:
 		for rec in SeqIO.parse(self.query_fpath, "fasta"):
 			query_recs.append(rec)
 	
+		query_list = []
 		query_path = self.base_blast_path + args.query_dir
 		plumber.force_dir(query_path)
 		for rec in query_recs:
 			write_out = [rec]
 			write_path = query_path+self.__format_id(rec.id)+".fasta"
 			SeqIO.write(write_out, write_path, "fasta")
-			self.query_list.append(write_path)
+			query_list.append(write_path)
+			
+		return query_list
 
 	# __gen_db_path func
 	# creates and the blast database directory for a passe sampleBall
@@ -92,7 +96,7 @@ class blastBranch:
 		bucket_path = self.base_blast_path + args.bucket_dir
 		plumber.force_dir(bucket_path)
 		for sball in self.sample_pit:
-			print("\tMaking database for sample", sball.sample_id)
+			print("\t\tMaking database for sample", sball.sample_id)
 			out_path = self.__gen_db_path(sball, bucket_path)
 			blast_cmd = ["makeblastdb", "-in", sball.export_fasta,
 						"-dbtype", "nucl", "-out", out_path]
@@ -102,12 +106,45 @@ class blastBranch:
 										stdin=subprocess.PIPE, check=True,
 										universal_newlines=True)
 			except subprocess.CalledProcessError as perror:
-				print("ERROR: makeblastdb failed!")
+				raise(RuntimeError("ERROR: makeblastdb failed!"))
 
 			self.db_bucket.append(out_path)
+
+	# __build_qSeqs func
+	# Builds a list of all qSeq objects using query_list and the db_bucket
+	def __build_qSeqs(self, query_list):
+		for query_path in query_list:
+			new_qSeq = qSeq(query_path, self.db_bucket)
+			self.qSeq_list.append(new_qSeq)
+
+	# __blast_all func
+	# Calls the bucket_blast function on each qSeq obj in qSeq_list
+	def __blast_all(self):
+		archive_path = self.base_blast_path + args.archive_dir
+		plumber.force_dir(archive_path)
+		for query in self.qSeq_list:
+			print("\t\tBlasting %s against bucket ..." % query.query_name)
+			query.bucket_blast(archive_path)
+
+	# __gen_hr_reports func
+	# Converts the archive to human readable reports
+	def __gen_hr_reports(self):
+		reports_path = self.base_blast_path + args.report_dir
+		plumber.force_dir(reports_path)
+		for query in self.qSeq_list:
+			print("\t\tBuilding reports for %s ..." % query.query_name)
+			query.convert_hr_reports(reports_path)
 
 	# run func
 	# Starts the blast branch
 	def run(self):
-		self.__split_queries()
+		print("\tBLASTER alive and running ...")
+		print("\tSplitting queries ...")
+		query_list = self.__split_queries()
+		print("\tBuiding database bucket ...")
 		self.__build_bucket()
+		self.__build_qSeqs(query_list)
+		print("\tBeginning bucket blasts ...")
+		self.__blast_all()
+		print("\tBuilding HR reports ...")
+		self.__gen_hr_reports()
