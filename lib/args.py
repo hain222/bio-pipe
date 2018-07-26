@@ -33,6 +33,7 @@ query_dir = 'queries/'
 bucket_dir = 'bucket/'
 archive_dir = "archives/"
 report_dir = "reports/"
+sub_seq_dir = "subject_seqs/"
 
 # parser HELPS
 read_dir_help = "read_dir HELP"

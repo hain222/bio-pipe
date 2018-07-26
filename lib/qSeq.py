@@ -24,6 +24,9 @@
 import os
 import subprocess
 import lib.plumber as plumber
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio import SeqIO
 
 # qSeq class
 class qSeq:
@@ -99,20 +102,77 @@ class qSeq:
 	# Converts the all archives present in self.archives into
 	# hr reports. Sets the self.reports atr.
 	def convert_hr_reports(self, reports_path):
-			convert_path = reports_path + self.__gen_report_subdir()
-			plumber.force_dir(convert_path)
-			for arch_path in self.archives:
-				out_path = convert_path + self.__gen_report_name(arch_path)
-				bconvert_cmd = ["blast_formatter", "-archive", arch_path,
-								"-outfmt", "0", "-out", out_path]
-				#print(bconvert_cmd)
-				try:
-					convert_ret = subprocess.run(bconvert_cmd,
+		convert_path = reports_path + self.__gen_report_subdir()
+		plumber.force_dir(convert_path)
+		for arch_path in self.archives:
+			out_path = convert_path + self.__gen_report_name(arch_path)
+			bconvert_cmd = ["blast_formatter", "-archive", arch_path,
+							"-outfmt", "0", "-out", out_path]
+			#print(bconvert_cmd)
+			try:
+				convert_ret = subprocess.run(bconvert_cmd,
+										stdout=subprocess.PIPE,
+										stderr=subprocess.PIPE, 
+										check=True,
+										universal_newlines=True)
+			except subprocess.CalledProcessError as perror:
+				raise(RuntimeError("ERROR: Report conversion failed!"))
+
+			self.reports.append(out_path)
+
+	# __gen_sseq_name func
+	# Generates a subject seq fasta name
+	def __gen_sseq_name(self, arch_path):
+		prefix = os.path.basename(arch_path)[:-8]
+		return prefix + ".fasta"
+
+	# seq_format func
+	# removes all '-' from the given sequence
+	def seq_format(self, sseq):
+		new_seq = ""
+		for base in sseq:
+			if base != "-" and base != '\n':
+				new_seq+=base
+		
+		return new_seq
+
+	# get_sub_seqs func
+	# Grabs the subject sequences from the archive reports and 
+	# writes them to their own fasta file. 
+	def get_sub_seqs(self, sub_seq_path):
+		sub_dir = sub_seq_path + self.query_name + "_sseq/"
+		plumber.force_dir(sub_dir)
+		temp_name = "sseq_tab_tempBLASTn6"
+		for arch_path in self.archives:
+			out_path = sub_seq_path + temp_name
+			bconvert_cmd = ["blast_formatter", "-archive", arch_path,
+							"-outfmt", "6 qseqid sseqid sseq", "-out",
+							out_path]
+			try:
+				convert_ret = subprocess.run(bconvert_cmd, 
 											stdout=subprocess.PIPE,
-											stderr=subprocess.PIPE, 
+											stderr=subprocess.PIPE,
 											check=True,
 											universal_newlines=True)
-				except subprocess.CalledProcessError as perror:
-					raise(RuntimeError("ERROR: Report conversion failed!"))
+			except subprocess.CalledProcessError as perror:
+				raise(RuntimeError("ERROR: Tab conversion failed!"))
 
-				self.reports.append(out_path)
+			output_file = sub_dir + self.__gen_sseq_name(arch_path)
+			with open(sub_seq_path + temp_name) as tf:
+				dat = tf.readlines()
+			sseq_count = len(dat)
+			if sseq_count != 0:
+				records = []
+				for line in dat:
+					qseqid = line.split("\t")[0]
+					sseqid = line.split("\t")[1]
+					sseq = line.split("\t")[2]
+					record_id = qseqid+"."+sseqid
+					record_seq = Seq(self.seq_format(sseq))
+					rec = SeqRecord(record_seq, id=record_id,
+									description="")
+					records.append(rec)
+
+				SeqIO.write(records, output_file, "fasta")
+
+		os.remove(sub_seq_path + temp_name)

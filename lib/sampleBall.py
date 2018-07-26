@@ -36,11 +36,10 @@ class sampleBall:
 
 	# __init__ func
 	# Define class atr using passed readBall
-	# (Note: remove rball = None arg)
-	def __init__(self, rball=None, key_file=None):
-		### self.run_id = rball.run_id
-		### self.sample_id = rball.sample_id
-		### self.inter_rf = rball.inter_rf
+	def __init__(self, rball, key_file=None):
+		self.run_id = rball.run_id
+		self.sample_id = rball.sample_id
+		self.inter_rf = rball.inter_rf
 		self.cbox = config()
 
 		# Check that config obj loaded correctly
@@ -131,4 +130,4 @@ class sampleBall:
 		print(self.sample_id)
 		print(self.assemble_path)
 		print(self.export_fasta)
-		### self.inter_rf.tprint()
+		self.inter_rf.tprint()

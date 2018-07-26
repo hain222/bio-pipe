@@ -135,6 +135,15 @@ class blastBranch:
 			print("\t\tBuilding reports for %s ..." % query.query_name)
 			query.convert_hr_reports(reports_path)
 
+	# Extracts the hit subject sequences and writes them
+	# to their own fastas
+	def __extract_sub_seqs(self):
+		sub_seq_path = self.base_blast_path + args.sub_seq_dir
+		plumber.force_dir(sub_seq_path)
+		for query in self.qSeq_list:
+			print("\t\tBuilding reports for %s ..." % query.query_name)
+			query.get_sub_seqs(sub_seq_path)
+
 	# run func
 	# Starts the blast branch
 	def run(self):
@@ -148,3 +157,5 @@ class blastBranch:
 		self.__blast_all()
 		print("\tBuilding HR reports ...")
 		self.__gen_hr_reports()
+		print("\tExtracting subject seq fastas ...")
+		self.__extract_sub_seqs()
