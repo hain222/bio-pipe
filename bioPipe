@@ -31,6 +31,7 @@ import lib.plumber as plumber
 from lib.readFile import readFile
 from lib.readBall import readBall
 from lib.sampleBall import sampleBall
+from lib.blast import blastBranch
 
 # bioPipe class
 class bioPipe:
@@ -140,8 +141,14 @@ class bioPipe:
 	# grow_blast_branch func
 	# Executes the blast branch of the pipe, blasting all of the seqs
 	# found in the blast_branch arg one at a time against each genome
-	def self.grow_blast_branch(self):
-		blaster.sample_blast(self.sample_pit, self.blast_branch)
+	def grow_blast_branch(self):
+		print("Starting BLAST branch ...")
+		blast_path = self.output_dir+args.blast_dir
+		plumber.force_dir(blast_path)
+		print("BLAST branch path set to", blast_path)
+		blaster = blastBranch(blast_path, self.sample_pit, 
+							self.blast_branch)
+		blaster.run()
 
 	# run func
 	# Starts the pipe
@@ -169,8 +176,8 @@ class bioPipe:
 		# sample_pit contains sampleBalls, which contain all the atr
 		# and functionalites needed for operations post-read processing
 		self.sample_pit = []
-		for rball in self.read_pit:
-			self.sample_pit.append(sampleBall(rball, self.key_file))
+		### for rball in self.read_pit:
+		###	self.sample_pit.append(sampleBall(rball, self.key_file))
 
 		#for sball in self.sample_pit:
 		#	sball.tprint()
@@ -184,13 +191,13 @@ class bioPipe:
 		sb1.sample_id = "S1"
 		sb1.strain_id = "HC296"
 		sb1.inter_rf = None
-		sb1.assemble_path = "chunk_out/assembly/4560-HC296_assembly"
+		sb1.assemble_path = "chunk_out/assembly/4560-HC296_assembly/"
 		sb2 = sampleBall()
 		sb2.run_id = "4560"
 		sb2.sample_id = "S2"
 		sb2.strain_id = None
 		sb2.inter_rf = None
-		sb2.assemble_path = "chunk_out/assembly/4560-HC540_assembly"
+		sb2.assemble_path = "chunk_out/assembly/4560-HC540_assembly/"
 		self.sample_pit = [sb1, sb2]
 
 		#for sball in self.sample_pit:

@@ -86,7 +86,7 @@ class trimmer:
 
 		try:
 			trim_ret = subprocess.run(trim_cmd, stdout=subprocess.PIPE, 
-									stderr=subprocess.PIPE, check=False, 
+									stderr=subprocess.PIPE, check=True, 
 									universal_newlines=True)
 		except subprocess.CalledProcessError as perror:
 			raise(RuntimeError("ERROR: trim run failed!"))

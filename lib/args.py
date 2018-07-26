@@ -28,6 +28,10 @@ inter_dir = 'interleaved/'
 assemble_dir = 'assembly/'
 assembly_exp_dir = 'fastas/'
 
+blast_dir = 'blast/'
+query_dir = 'queries/'
+bucket_dir = 'bucket/'
+
 # parser HELPS
 read_dir_help = "read_dir HELP"
 output_dir_help = "output_dir HELP"

@@ -78,9 +78,9 @@ class sampleBall:
 	# Generates the vevlet assembly dir name
 	def __gen_assem_name(self):
 		if self.strain_id != None:
-			return "%s-%s_assembly" % (self.run_id, self.strain_id)
+			return "%s-%s_assembly/" % (self.run_id, self.strain_id)
 		else:
-			return "%s-%s_assembly" % (self.run_id, self.sample_id)
+			return "%s-%s_assembly/" % (self.run_id, self.sample_id)
 
 	# assemble func
 	# Calls velvetoptimiser using the passed kmer args and assemble dir
@@ -107,13 +107,13 @@ class sampleBall:
 	# dir and renames the fasta according to the strain_id or sample_id
 	def export_assembly(self, exp_path):
 		if self.strain_id == None:
-			cpy_dst = "%s/%s-%s_%s.fasta" % (exp_path, self.run_id, 
+			cpy_dst = "%s%s-%s_%s.fasta" % (exp_path, self.run_id, 
 											self.sample_id, self.sample_id)
 		else:
-			cpy_dst = "%s/%s-%s_%s.fasta" % (exp_path, self.run_id, 
+			cpy_dst = "%s%s-%s_%s.fasta" % (exp_path, self.run_id, 
 											self.sample_id, self.strain_id)
 
-		shutil.copy("%s/contigs.fa" % self.assemble_path, cpy_dst, 
+		shutil.copy("%scontigs.fa" % self.assemble_path, cpy_dst, 
 					follow_symlinks=True)
 		self.export_fasta = cpy_dst
 
