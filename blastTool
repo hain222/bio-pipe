@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+
+import os
+import argparse
+import lib.plumber as plumber
+from lib.blast import blastBranch
+
+# blaster uses sample_id and export_fasta variables
+
+#genome_dir = "5101_genomes/"
+#genes_path = "bg.fasta"
+#blast_path = "5101_blast/"
+
+# simplified version of sampleBall, for holding just id and fasta path
+class simpleBall:
+	
+	def __init__(self, sample_id, fpath):
+		self.sample_id = sample_id
+		self.export_fasta = fpath
+
+	def print(self):
+		print(self.sample_id)
+		print(self.export_fasta)
+		print()
+
+# parse_args function
+# Parses parameters using argparse
+def parse_args():
+	parser = argparse.ArgumentParser()
+	parser.add_argument('genome_dir', help='genome_dir HELP')
+	parser.add_argument('genes_path', help='genes_path HELP')
+	parser.add_argument('blast_path', help='blast_path HELP')
+	args = parser.parse_args()
+
+	return args
+
+# main function
+def main():
+	args = parse_args()
+	genome_dir = args.genome_dir
+	genes_path = args.genes_path
+	blast_path = args.blast_path
+
+	if blast_path[-1] != "/":
+		blast_path += "/"
+
+	plumber.force_dir(blast_path)
+
+	simple_pit = []
+	for gpath in os.listdir(genome_dir):
+		sid = gpath.split('.')[0]
+		fpath = genome_dir+gpath
+		sball = simpleBall(sid, fpath)
+		simple_pit.append(sball)
+
+	blaster = blastBranch(blast_path, simple_pit, genes_path)
+	blaster.run()
+
+main()
