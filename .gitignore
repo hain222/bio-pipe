@@ -1,6 +1,3 @@
-# Ignore boilerplate code
-boilerplate.*
-
 # Ignore testing code/dirs
 test*
 
